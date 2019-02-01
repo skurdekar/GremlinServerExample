@@ -1,0 +1,28 @@
+# Intellij #
+.idea/
+*.iml
+*.iws
+*.ipr
+/out/
+
+# Java #
+*.class
+
+# Package Files #
+*.jar
+*.war
+*.ear
+
+# Gradle #
+.gradletasknamecache
+.gradle/
+/build/
+bin/
+
+# Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
+!gradle-wrapper.jar
+
+# # Work around https://youtrack.jetbrains.com/issue/IDEA-116898
+# gradle/wrapper/gradle-wrapper.properties
+
+# End of https://www.gitignore.io/api/java,gradle
