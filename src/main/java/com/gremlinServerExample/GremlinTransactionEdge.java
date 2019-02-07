@@ -13,42 +13,9 @@ import java.util.*;
 import static org.apache.tinkerpop.gremlin.process.traversal.AnonymousTraversalSource.traversal;
 import static org.apache.tinkerpop.gremlin.process.traversal.P.within;
 
-public class GremlinServerExample2 {
+public class GremlinTransactionEdge {
 
     TinkerConnector connector = TinkerConnector.getInstance();
-
-    public void createGraph() {
-        Cluster cluster = null;
-        try {
-            cluster = connector.openCluster();
-            GraphTraversalSource g = traversal().withRemote(DriverRemoteConnection.using(cluster));
-
-            final Vertex b1 = g.addV("b").property("name", "b1").property("type", "bene").property("btin", "b1111").next();
-            final Vertex b2 = g.addV("b").property("name", "b2").property("type", "bene").property("btin", "b2222").next();
-            final Vertex b3 = g.addV("b").property("name", "b3").property("type", "bene").property("btin", "b3333").next();
-            final Vertex b4 = g.addV("b").property("name", "b4").property("type", "bene").property("btin", "b4444").next();
-            final Vertex b5 = g.addV("b").property("name", "b5").property("type", "bene").property("btin", "b5555").next();
-            final Vertex c1 = g.addV("c").property("name", "c1").property("type", "cond").property("ctin", "c1111").next();
-            final Vertex c2 = g.addV("c").property("name", "c2").property("type", "cond").property("ctin", "c2222").next();
-            final Vertex c3 = g.addV("c").property("name", "c3").property("type", "cond").property("ctin", "c3333").next();
-            final Vertex c4 = g.addV("c").property("name", "c4").property("type", "cond").property("ctin", "c4444").next();
-            final Vertex c5 = g.addV("c").property("name", "c5").property("type", "cond").property("ctin", "c5555").next();
-
-            g.addE("transaction").from(c1).to(b1).property("name", "t1").property("amount", 6000).next();
-            g.addE("transaction").from(c1).to(b1).property("name", "t2").property("amount", 5000).next();
-            g.addE("transaction").from(c1).to(b2).property("name", "t3").property("amount", 7000).next();
-            g.addE("transaction").from(c2).to(b3).property("name", "t4").property("amount", 8000).next();
-            g.addE("transaction").from(c3).to(b4).property("name", "t5").property("amount", 11000).next();
-            g.addE("transaction").from(c4).to(b4).property("name", "t6").property("amount", 3000).next();
-            g.addE("transaction").from(c1).to(b5).property("name", "t7").property("amount", 3000).next();
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            System.out.println("Could not create graph");
-        } finally {
-            connector.closeCluster(cluster);
-        }
-    }
 
     public void runGraph(){
         Cluster cluster = null;
@@ -106,7 +73,7 @@ public class GremlinServerExample2 {
         }
     }
 
-    private void generateCTRs(GraphTraversalSource g, List vertexIds) {
+    public static void generateCTRs(GraphTraversalSource g, List vertexIds) {
         GraphTraversal<Edge, Map<Object, Object>> trav = g.E().hasId(within(vertexIds.toArray())).valueMap();
 
         long totalAmount = 0;
@@ -138,8 +105,8 @@ public class GremlinServerExample2 {
     }
 
     public static void main(String args[]) {
-        GremlinServerExample2 gse = new GremlinServerExample2();
-        gse.createGraph();
+        GremlinTransactionEdge gse = new GremlinTransactionEdge();
+        GraphUtils.getInstance().createGraphTransactionEdge();
         gse.runGraph();
     }
 }

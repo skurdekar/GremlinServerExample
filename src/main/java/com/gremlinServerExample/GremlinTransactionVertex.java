@@ -1,7 +1,5 @@
 package com.gremlinServerExample;
 
-import org.apache.commons.configuration.Configuration;
-import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.tinkerpop.gremlin.driver.Client;
 import org.apache.tinkerpop.gremlin.driver.Cluster;
 import org.apache.tinkerpop.gremlin.driver.Result;
@@ -19,43 +17,9 @@ import static org.apache.tinkerpop.gremlin.process.traversal.P.within;
 import static org.apache.tinkerpop.gremlin.process.traversal.P.without;
 import static org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.__.*;
 
-public class GremlinServerExample {
+public class GremlinTransactionVertex {
 
     TinkerConnector connector = TinkerConnector.getInstance();
-
-    public void createGraph() {
-        Cluster cluster = null;
-        try {
-            cluster = connector.openCluster();
-            GraphTraversalSource g = traversal().withRemote(DriverRemoteConnection.using(cluster));
-
-            final Vertex b1 = g.addV("b").property("name", "b1").property("type", "bene").property("btin", "b1111").next();
-            final Vertex b2 = g.addV("b").property("name", "b2").property("type", "bene").property("btin", "b2222").next();
-            final Vertex b3 = g.addV("b").property("name", "b3").property("type", "bene").property("btin", "b3333").next();
-            final Vertex c1 = g.addV("c").property("name", "c1").property("type", "cond").property("ctin", "c1111").next();
-            final Vertex c2 = g.addV("c").property("name", "c2").property("type", "cond").property("ctin", "c2222").next();
-            final Vertex t1 = g.addV("t").property("name", "t1").property("type", "txn").property("amount", 6000).next();
-            final Vertex t2 = g.addV("t").property("name", "t2").property("type", "txn").property("amount", 5000).next();
-            final Vertex t3 = g.addV("t").property("name", "t3").property("type", "txn").property("amount", 7000).next();
-            final Vertex t4 = g.addV("t").property("name", "t4").property("type", "txn").property("amount", 8000).next();
-
-            g.addE("conducted").from(c1).to(t1).next();
-            g.addE("conducted").from(c1).to(t2).next();
-            g.addE("conducted").from(t1).to(b1).next();
-            g.addE("conducted").from(c1).to(t3).next();
-            g.addE("conducted").from(t2).to(b1).next();
-            g.addE("conducted").from(t3).to(b2).next();
-            g.addE("conducted").from(c2).to(t4).next();
-            g.addE("conducted").from(t4).to(b3).next();
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            System.out.println("Could not create graph");
-        }
-        finally {
-            connector.closeCluster(cluster);
-        }
-    }
 
     public void runGraph1() {
         Cluster cluster = null;
@@ -147,8 +111,8 @@ public class GremlinServerExample {
     }
 
     public static void main(String args[]) {
-        GremlinServerExample gse = new GremlinServerExample();
-        //gse.createGraph();
+        GremlinTransactionVertex gse = new GremlinTransactionVertex();
+        GraphUtils.getInstance().createGraphTransactionVertex();
         gse.runGraph2();
     }
 }
